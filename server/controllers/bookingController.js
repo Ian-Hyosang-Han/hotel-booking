@@ -60,7 +60,7 @@ export const createBooking = async (req, res) => {
     const checkIn = new Date(checkInDate);
     const checkOut = new Date(checkOutDate);
     const timeDiff = checkOut.getTime() - checkIn.getTime();
-    const nights = math.ceil(timeDiff / (1000 * 3600 * 24));
+    const nights = Math.ceil(timeDiff / (1000 * 3600 * 24));
 
     totalPrice *= nights;
     const booking = await Booking.create({
@@ -74,6 +74,7 @@ export const createBooking = async (req, res) => {
     });
     res.json({ success: true, message: "Booking created successfully" });
   } catch (error) {
+    console.error("Create Booking Error:", error);
     res.json({ success: false, message: "Failed to create booking" });
   }
 };
@@ -102,11 +103,11 @@ export const getHotelBookings = async (req, res) => {
       .populate("room hotel user")
       .sort({ createdAt: -1 });
     //Total Bookings
-    const totalBookigs = bookings.length;
+    const totalBookings = bookings.length;
     // Total Recenue
     const totalRevenue = bookings.reduce(( acc, booking ) => acc + booking.totalPrice, 0 );
 
-    res.json({ success: true, dashboardDate: (totalBookigs, totalRevenue, bookings)})
+    res.json({ success: true, dashboardData: {totalBookings, totalRevenue, bookings}});
   } catch (error) {
     res.json({ success: false, message: "Failed to fetch bookings"})
   }
